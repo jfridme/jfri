@@ -100,19 +100,19 @@ class MarketData_pl:
             'time'列为时间戳，其他列为品种代码，每行代表一个时间点的价格
 
             数据示例：
-┌───────────┬───────────┬───────────┬───────────┬───────────┐
-│ time      ┆ 600000.SH ┆ 301607.SZ ┆ 301608.SZ ┆ 301611.SZ │
-│ ---       ┆ ---       ┆ ---       ┆ ---       ┆ ---       │
-│ i64       ┆ f64       ┆ f64       ┆ f64       ┆ f64       │
-│           ┆           ┆           ┆           ┆           │
-╞═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ 172719360 ┆ 9.49      ┆ 31.92     ┆ 51.94     ┆ 30.62     │
-│ 0000      ┆           ┆           ┆           ┆           │
-│ 172728000 ┆ 9.84      ┆ 32.36     ┆ 51.9      ┆ 32.0      │
-│ 0000      ┆           ┆           ┆           ┆           │
-│ 172736640 ┆ 9.87      ┆ 35.17     ┆ 57.85     ┆ 34.72     │
-│ 0000      ┆           ┆           ┆           ┆           │
-└───────────┴───────────┴───────────┴───────────┴───────────┘
+                ┌───────────┬───────────┬───────────┬───────────┬───────────┐
+                │ time      ┆ 600000.SH ┆ 301607.SZ ┆ 301608.SZ ┆ 301611.SZ │
+                │ ---       ┆ ---       ┆ ---       ┆ ---       ┆ ---       │
+                │ i64       ┆ f64       ┆ f64       ┆ f64       ┆ f64       │
+                │           ┆           ┆           ┆           ┆           │
+                ╞═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
+                │ 172719360 ┆ 9.49      ┆ 31.92     ┆ 51.94     ┆ 30.62     │
+                │ 0000      ┆           ┆           ┆           ┆           │
+                │ 172728000 ┆ 9.84      ┆ 32.36     ┆ 51.9      ┆ 32.0      │
+                │ 0000      ┆           ┆           ┆           ┆           │
+                │ 172736640 ┆ 9.87      ┆ 35.17     ┆ 57.85     ┆ 34.72     │
+                │ 0000      ┆           ┆           ┆           ┆           │
+                └───────────┴───────────┴───────────┴───────────┴───────────┘
         '''
         this.price = price_pl
         this.cache = None
@@ -149,6 +149,13 @@ class MarketData_pd:
         price_pd: Pandas DataFrame
             价格数据
             'time'列为时间戳，其他列为品种代码，每行代表一个时间点的价格
+
+            数据示例：
+                stock          000009.SZ  688819.SH  689009.SH
+                time                      
+                1727193600000   5.317325   0.374879   1.315420
+                1727280000000   5.532438   0.380127   1.333029
+                1727366400000   5.875274   0.400042   1.403137
         '''
         this.price = price_pd
         this.cache = None
@@ -254,18 +261,30 @@ class Portfolio:
 
     asset_num = 0
 
-    def __init__(this, market_data):
+    def __init__(this, title = None, market_data = None):
         '''
         初始化投资组合
 
         market_data: 满足 MarketData 接口的对象
             市场数据
         '''
+        this.title = title
+        this.market_data = market_data
+
         this.assets = {}
         this.asset_map = {}
-        this.market_data = market_data
         this.trading_time = None
         return
+
+    def set_market_data(this, market_data):
+        '''
+        设置市场数据
+
+        market_data: 满足 MarketData 接口的对象
+            市场数据
+        '''
+        this.market_data = market_data
+        return this
 
     def set_trading_time(this, trading_time):
         '''
@@ -275,7 +294,7 @@ class Portfolio:
             交易日
         '''
         this.trading_time = trading_time
-        return
+        return this
 
     def create_asset_id(this):
         '''
